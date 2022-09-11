@@ -53,4 +53,9 @@ public class SquareObject extends JComponent implements Obstacle {
         return this.size;
     }
 
+    @Override
+    public ShapeType getShape() {
+        return ShapeType.SQUARE;
+    }
+
 }

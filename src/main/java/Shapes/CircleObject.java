@@ -10,10 +10,12 @@ public class CircleObject extends JComponent implements Obstacle {
 
     private double size;
 
+
     public CircleObject(double positionX, double positionY, double size) {
         this.positionX = positionX;
         this.positionY = positionY;
         this.size = size;
+
     }
 
     @Override
@@ -52,6 +54,11 @@ public class CircleObject extends JComponent implements Obstacle {
     @Override
     public double getTotalSize() {
         return this.size;
+    }
+
+    @Override
+    public ShapeType getShape() {
+        return ShapeType.CIRCLE;
     }
 
 }

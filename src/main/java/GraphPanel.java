@@ -3,6 +3,7 @@ import Shapes.SquareObject;
 import org.w3c.dom.css.Rect;
 
 import java.awt.*;
+import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 import javax.swing.*;
 
@@ -16,24 +17,39 @@ public class GraphPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        // draw the rectangle here
+
+        Graphics2D newGraphicsObject = (Graphics2D) g.create();
+
         for (int i = 0; i < allObstacles.size(); i++) {
+            Obstacle currentObject = this.allObstacles.get(i);
 
-            Obstacle currentSquareObject = this.allObstacles.get(i);
-
-            int xPosition = GraphPanel.inchesToSwingPosition(currentSquareObject.getPositionX());
-            int yPosition = GraphPanel.inchesToSwingPosition(currentSquareObject.getPositionY());
-            int size = GraphPanel.inchesToSwingPosition(currentSquareObject.getTotalSize());
+            int xPosition = GraphPanel.inchesToSwingPosition(currentObject.getPositionX());
+            int yPosition = GraphPanel.inchesToSwingPosition(currentObject.getPositionY());
+            int size = GraphPanel.inchesToSwingPosition(currentObject.getTotalSize());
 
             int[] transformedRectangleVector = GraphPanel.toCenterAnchorPoint(xPosition, yPosition, size);
 
+            switch (currentObject.getShape()) {
+                case SQUARE:
+                    g.drawRect(
+                            transformedRectangleVector[0],
+                            GraphPanel.transformYComponentToCartesianCoordinate(transformedRectangleVector[1]),
+                            size,
+                            size
+                    );
 
-            g.drawRect(
-                transformedRectangleVector[0],
-                GraphPanel.transformYComponentToCartesianCoordinate(transformedRectangleVector[1]),
-                size,
-                size
-            );
+                case CIRCLE:
+                    newGraphicsObject.draw(
+                        new Ellipse2D.Double(
+                            transformedRectangleVector[0],
+                            GraphPanel.transformYComponentToCartesianCoordinate(transformedRectangleVector[1]),
+                            size,
+                            size
+                        )
+                    );
+            }
+
+
 
 
         }

@@ -1,4 +1,6 @@
+import Shapes.CircleObject;
 import Shapes.Obstacle;
+import Shapes.ShapeType;
 import Shapes.SquareObject;
 
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ public class Graph {
         }
     }
 
-    public void addObstacle(SquareObject newObject) {
+    public void addObstacle(Obstacle newObject) {
         int amountOfSquaresObstructedX = (int) (newObject.getTotalSize() / UNIT_LENGTH);
 
         int middleXIndex = getIndexFromPosition(newObject.getPositionX());
@@ -46,9 +48,21 @@ public class Graph {
                 Math.min(middleYIndex + squaresInBetween, TOTAL_AMOUNT_OF_UNITS)
         };
 
+        int maxIndexDistance = (int) Math.pow((double) ((newObject.getTotalSize() / 2) / Graph.UNIT_LENGTH), 2);
+
+        System.out.println(maxIndexDistance);
+        System.out.println(newObject.getTotalSize());
         for (int startYIndex = yBounds[0]; startYIndex < yBounds[1]; startYIndex++) {
             for (int startXIndex = xBounds[0]; startXIndex < xBounds[1]; startXIndex++) {
-                this.adjacencyMatrix[startYIndex][startXIndex] = false;
+                switch (newObject.getShape()) {
+                    case SQUARE:
+                        this.adjacencyMatrix[startYIndex][startXIndex] = false;
+                    case CIRCLE: {
+                        if (maxIndexDistance > Math.pow(startXIndex - middleXIndex, 2) + Math.pow(startYIndex - middleYIndex, 2))
+                            this.adjacencyMatrix[startYIndex][startXIndex] = false;
+                        System.out.println(Math.pow(startXIndex - middleXIndex, 2) + Math.pow(startYIndex - middleYIndex, 2));
+                    }
+                }
             }
         }
 
@@ -94,11 +108,11 @@ public class Graph {
                 new SquareObject(72, 48, ROBOT_SIZE)
         };*/
 
-        SquareObject[] signals = new SquareObject[] {
-                new SquareObject(36, 36, ROBOT_SIZE),
-                new SquareObject(108,36, ROBOT_SIZE),
-                new SquareObject(36, 108, ROBOT_SIZE),
-                new SquareObject(108, 108, ROBOT_SIZE)
+        CircleObject[] signals = new CircleObject[] {
+                new CircleObject(36, 36, ROBOT_SIZE),
+                new CircleObject(108,36, ROBOT_SIZE),
+                new CircleObject(36, 108, ROBOT_SIZE),
+                new CircleObject(108, 108, ROBOT_SIZE)
         };
 
 /*        List allObjects = Stream.concat(

@@ -4,6 +4,8 @@ import java.awt.*;
 
 public interface Obstacle {
 
+
+
     public void setPositionX(double newPositionX);
 
     public void setPositionY(double newPositionY);
@@ -15,4 +17,6 @@ public interface Obstacle {
     public double getPositionY();
 
     public double getTotalSize();
+
+    public ShapeType getShape();
 }
