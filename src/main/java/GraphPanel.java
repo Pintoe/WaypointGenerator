@@ -1,10 +1,12 @@
 import Shapes.Obstacle;
-import Shapes.SquareObject;
-import org.w3c.dom.css.Rect;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 
@@ -17,9 +19,15 @@ public class GraphPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        try {
+            g.drawImage(ImageIO.read(new File("C:\\Users\\darre\\Documents\\Code\\Java\\WaypointGenerator\\src\\main\\resources\\powerplay-field.png")), 0, 0, this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         Graphics2D newGraphicsObject = (Graphics2D) g.create();
 
+        newGraphicsObject.setPaint(new Color(255, 0, 0, 128));
         for (int i = 0; i < allObstacles.size(); i++) {
             Obstacle currentObject = this.allObstacles.get(i);
 
@@ -31,25 +39,29 @@ public class GraphPanel extends JPanel {
 
             switch (currentObject.getShape()) {
                 case SQUARE:
-                    g.drawRect(
-                            transformedRectangleVector[0],
-                            GraphPanel.transformYComponentToCartesianCoordinate(transformedRectangleVector[1]),
-                            size,
-                            size
+                    newGraphicsObject.fill(
+                            new Rectangle(
+                                transformedRectangleVector[0],
+                                GraphPanel.transformYComponentToCartesianCoordinate(transformedRectangleVector[1]),
+                                size,
+                                size
+                            )
                     );
 
-                case CIRCLE:
-                    newGraphicsObject.draw(
-                        new Ellipse2D.Double(
-                            transformedRectangleVector[0],
-                            GraphPanel.transformYComponentToCartesianCoordinate(transformedRectangleVector[1]),
-                            size,
-                            size
-                        )
+                case CIRCLE: {
+                    Ellipse2D newCircle = new Ellipse2D.Double(
+                        transformedRectangleVector[0],
+                        GraphPanel.transformYComponentToCartesianCoordinate(transformedRectangleVector[1]),
+                        size,
+                        size
                     );
+
+
+                    newGraphicsObject.fill(
+                        newCircle
+                    );
+                }
             }
-
-
 
 
         }

@@ -13,19 +13,24 @@ import javax.swing.*;
 
 public class Graph {
     public static final int FIELD_LENGTH = 144; // inches
-    private static final double UNIT_LENGTH = 0.5D; // inches
+    private static final double UNIT_LENGTH = 1.4D; // inches
     private static final int TOTAL_AMOUNT_OF_UNITS = (int) (FIELD_LENGTH / UNIT_LENGTH);
 
     private static final int ROBOT_SIZE = 18;
-    private final boolean[][] adjacencyMatrix;
 
+    private static final int FLOOR_JUNCTION_OFFSET = 3;
+    private static final int JUNCTION_OFFSET = 1;
+    private static final int SIGNAL_OFFSET = 1;
+    private final boolean[][] adjacencyMatrix;
+    
+    
     ArrayList<Obstacle> allObjects = new ArrayList<>();
     public Graph() {
         this.adjacencyMatrix = new boolean[TOTAL_AMOUNT_OF_UNITS][TOTAL_AMOUNT_OF_UNITS];
 
         for (int i = 0; i < TOTAL_AMOUNT_OF_UNITS; i++) {
             for (int j = 0; j < TOTAL_AMOUNT_OF_UNITS; j++) {
-                this.adjacencyMatrix[i][j] = true;
+                this.adjacencyMatrix[i][j] = i != j;
             }
         }
     }
@@ -57,9 +62,12 @@ public class Graph {
                 switch (newObject.getShape()) {
                     case SQUARE:
                         this.adjacencyMatrix[startYIndex][startXIndex] = false;
+                        this.adjacencyMatrix[startXIndex][startYIndex] = false;
                     case CIRCLE: {
-                        if (maxIndexDistance > Math.pow(startXIndex - middleXIndex, 2) + Math.pow(startYIndex - middleYIndex, 2))
+                        if (maxIndexDistance > Math.pow(startXIndex - middleXIndex, 2) + Math.pow(startYIndex - middleYIndex, 2)) {
                             this.adjacencyMatrix[startYIndex][startXIndex] = false;
+                            this.adjacencyMatrix[startXIndex][startYIndex] = false;
+                        }
                         System.out.println(Math.pow(startXIndex - middleXIndex, 2) + Math.pow(startYIndex - middleYIndex, 2));
                     }
                 }
@@ -70,52 +78,52 @@ public class Graph {
 
     public void addPowerPlayFieldObstacles() {
 
-/*        SquareObject[] floorJunctions = new SquareObject[] {
-                new SquareObject(24, 24, ROBOT_SIZE),
-                new SquareObject(72, 24, ROBOT_SIZE),
-                new SquareObject(120, 24, ROBOT_SIZE),
-                new SquareObject(24, 72, ROBOT_SIZE),
-                new SquareObject(72, 72, ROBOT_SIZE),
-                new SquareObject(120, 72, ROBOT_SIZE),
-                new SquareObject(24, 120, ROBOT_SIZE),
-                new SquareObject(70, 120, ROBOT_SIZE),
-                new SquareObject(120, 120, ROBOT_SIZE)
+        CircleObject[] floorJunctions = new CircleObject[] {
+                new CircleObject(24, 24, ROBOT_SIZE + Graph.FLOOR_JUNCTION_OFFSET),
+                new CircleObject(72, 24, ROBOT_SIZE + Graph.FLOOR_JUNCTION_OFFSET),
+                new CircleObject(120, 24, ROBOT_SIZE + Graph.FLOOR_JUNCTION_OFFSET),
+                new CircleObject(24, 72, ROBOT_SIZE + Graph.FLOOR_JUNCTION_OFFSET),
+                new CircleObject(72, 72, ROBOT_SIZE + Graph.FLOOR_JUNCTION_OFFSET),
+                new CircleObject(120, 72, ROBOT_SIZE + Graph.FLOOR_JUNCTION_OFFSET),
+                new CircleObject(24, 120, ROBOT_SIZE + Graph.FLOOR_JUNCTION_OFFSET),
+                new CircleObject(72, 120, ROBOT_SIZE + Graph.FLOOR_JUNCTION_OFFSET),
+                new CircleObject(120, 120, ROBOT_SIZE + Graph.FLOOR_JUNCTION_OFFSET)
         };
 
-        SquareObject[] smallJunctions = new SquareObject[] {
-                new SquareObject(24, 48, ROBOT_SIZE),
-                new SquareObject(24, 96, ROBOT_SIZE),
-                new SquareObject(48, 24, ROBOT_SIZE),
-                new SquareObject(48, 120, ROBOT_SIZE),
-                new SquareObject(96, 24, ROBOT_SIZE),
-                new SquareObject(96, 120, ROBOT_SIZE),
-                new SquareObject(120, 48, ROBOT_SIZE),
-                new SquareObject(120, 96, ROBOT_SIZE),
+        CircleObject[] smallJunctions = new CircleObject[] {
+                new CircleObject(24, 48, ROBOT_SIZE + Graph.JUNCTION_OFFSET),
+                new CircleObject(24, 96, ROBOT_SIZE + Graph.JUNCTION_OFFSET),
+                new CircleObject(48, 24, ROBOT_SIZE + Graph.JUNCTION_OFFSET),
+                new CircleObject(48, 120, ROBOT_SIZE + Graph.JUNCTION_OFFSET),
+                new CircleObject(96, 24, ROBOT_SIZE + Graph.JUNCTION_OFFSET),
+                new CircleObject(96, 120, ROBOT_SIZE + Graph.JUNCTION_OFFSET),
+                new CircleObject(120, 48, ROBOT_SIZE + Graph.JUNCTION_OFFSET),
+                new CircleObject(120, 96, ROBOT_SIZE + Graph.JUNCTION_OFFSET),
         };
 
-        SquareObject[] mediumJunctions = new SquareObject[] {
-                new SquareObject(48, 48, ROBOT_SIZE),
-                new SquareObject(48, 96, ROBOT_SIZE),
-                new SquareObject(96, 48, ROBOT_SIZE),
-                new SquareObject(96, 96, ROBOT_SIZE)
+        CircleObject[] mediumJunctions = new CircleObject[] {
+                new CircleObject(48, 48, ROBOT_SIZE + Graph.JUNCTION_OFFSET),
+                new CircleObject(48, 96, ROBOT_SIZE + Graph.JUNCTION_OFFSET),
+                new CircleObject(96, 48, ROBOT_SIZE + Graph.JUNCTION_OFFSET),
+                new CircleObject(96, 96, ROBOT_SIZE + Graph.JUNCTION_OFFSET)
         };
 
 
-        SquareObject[] tallJunctions = new SquareObject[] {
-                new SquareObject(48, 72, ROBOT_SIZE),
-                new SquareObject(72, 96, ROBOT_SIZE),
-                new SquareObject(96, 72, ROBOT_SIZE),
-                new SquareObject(72, 48, ROBOT_SIZE)
-        };*/
+        CircleObject[] tallJunctions = new CircleObject[] {
+                new CircleObject(48, 72, ROBOT_SIZE + Graph.JUNCTION_OFFSET),
+                new CircleObject(72, 96, ROBOT_SIZE + Graph.JUNCTION_OFFSET),
+                new CircleObject(96, 72, ROBOT_SIZE + Graph.JUNCTION_OFFSET),
+                new CircleObject(72, 48, ROBOT_SIZE + Graph.JUNCTION_OFFSET)
+        };
 
         CircleObject[] signals = new CircleObject[] {
-                new CircleObject(36, 36, ROBOT_SIZE),
-                new CircleObject(108,36, ROBOT_SIZE),
-                new CircleObject(36, 108, ROBOT_SIZE),
-                new CircleObject(108, 108, ROBOT_SIZE)
+                new CircleObject(36, 36, ROBOT_SIZE + Graph.SIGNAL_OFFSET),
+                new CircleObject(108,36, ROBOT_SIZE + Graph.SIGNAL_OFFSET),
+                new CircleObject(36, 108, ROBOT_SIZE + Graph.SIGNAL_OFFSET),
+                new CircleObject(108, 108, ROBOT_SIZE + Graph.SIGNAL_OFFSET)
         };
 
-/*        List allObjects = Stream.concat(
+        List allObjects = Stream.concat(
             Stream.concat(
                 Arrays.stream(floorJunctions),
                 Arrays.stream(smallJunctions)
@@ -127,18 +135,15 @@ public class Graph {
                             Arrays.stream(signals)
                     )
             )
-        ).toList();*/
+        ).toList();
 
-/*        for (ListIterator iter = allObjects.listIterator(); iter.hasNext(); ) {
-            JComponent currentObject = (JComponent) iter.next();
-            this.addObstacle((SquareObject) currentObject);
-            this.allObjects.add((Obstacle) currentObject);
-        }*/
-
-        for (int i = 0; i < signals.length; i++) {
-            this.addObstacle(signals[i]);
-            this.allObjects.add(signals[i]);
+        for (ListIterator iter = allObjects.listIterator(); iter.hasNext(); ) {
+            Obstacle currentObject = (Obstacle) iter.next();
+            this.addObstacle(currentObject);
+            this.allObjects.add(currentObject);
         }
+
+
     }
 
     public void visualizeCommandLine() {
